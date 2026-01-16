@@ -75,7 +75,7 @@
                         {{ booking.get_status_display }}
                     </span>
                 </td>
-                <td>${{ booking.total_amount }}</td>
+                <td>₹{{ booking.total_amount }}</td>
                 <td>{{ booking.booking_date|date:"M d, Y H:i" }}</td>
                 <td>
                     {% if booking.attendance_marked %}

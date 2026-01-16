@@ -17,7 +17,7 @@
                 <table class="table">
                     <tr>
                         <td><strong>Event Fee:</strong></td>
-                        <td class="text-end">${{ booking.event_fee }}</td>
+                        <td class="text-end">₹{{ booking.event_fee }}</td>
                     </tr>
                     {% for service in services %}
                     <tr>
@@ -29,12 +29,12 @@
                                 - {{ service.catering_package.name }} ({{ service.plate_count }} plates)
                             {% endif %}
                         </td>
-                        <td class="text-end">${{ service.service_price }}</td>
+                        <td class="text-end">₹{{ service.service_price }}</td>
                     </tr>
                     {% endfor %}
                     <tr class="table-primary">
                         <td><strong>Total Amount:</strong></td>
-                        <td class="text-end"><strong>${{ booking.total_amount }}</strong></td>
+                        <td class="text-end"><strong>₹{{ booking.total_amount }}</strong></td>
                     </tr>
                 </table>
                 

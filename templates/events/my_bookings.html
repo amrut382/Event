@@ -33,7 +33,7 @@
                         {{ booking.get_status_display }}
                     </span>
                 </td>
-                <td>${{ booking.total_amount }}</td>
+                <td>₹{{ booking.total_amount }}</td>
                 <td>{{ booking.booking_date|date:"M d, Y H:i" }}</td>
                 <td>
                     <a href="{% url 'booking_step3' booking.id %}" class="btn btn-sm btn-info">View Details</a>

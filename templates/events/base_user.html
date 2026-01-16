@@ -1,50 +1,90 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+{% endblock %}
+
 {% block content %}
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+<nav class="main-navbar navbar navbar-expand-lg navbar-dark fixed-top">
     <div class="container">
         <a class="navbar-brand" href="{% url 'home' %}">
-            <i class="bi bi-calendar-event"></i> Event Booking
+            <div class="brand-wrapper">
+                <span class="brand-icon"><i class="bi bi-calendar-event"></i></span>
+                <span class="brand-text">Event Booking</span>
+            </div>
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <button class="navbar-toggler custom-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'home' %}">Home</a>
+                    <a class="nav-link" href="{% url 'home' %}">
+                        <i class="bi bi-house-door me-1"></i>Home
+                    </a>
                 </li>
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'my_bookings' %}">My Bookings</a>
+                        <a class="nav-link" href="{% url 'my_bookings' %}">
+                            <i class="bi bi-bookmark-check me-1"></i>My Bookings
+                        </a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                            {{ user.username }}
+                        <a class="nav-link dropdown-toggle user-dropdown" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle me-1"></i>
+                            <span class="username-text">{{ user.username }}</span>
+                            <i class="bi bi-chevron-down ms-1 dropdown-arrow"></i>
                         </a>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu dropdown-menu-end custom-dropdown" aria-labelledby="navbarDropdown">
+                            <li class="dropdown-header">
+                                <div class="user-info">
+                                    <i class="bi bi-person-circle"></i>
+                                    <div>
+                                        <strong>{{ user.username }}</strong>
+                                        <small>{{ user.email }}</small>
+                                    </div>
+                                </div>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
                             {% if user.userprofile.role == 'admin' or user.userprofile.role == 'staff' %}
-                                <li><a class="dropdown-item" href="{% url 'admin_dashboard' %}">Admin Dashboard</a></li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'admin_dashboard' %}">
+                                        <i class="bi bi-speedometer2 me-2"></i>Admin Dashboard
+                                    </a>
+                                </li>
                             {% endif %}
-                            <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                            <li>
+                                <a class="dropdown-item logout-item" href="{% url 'logout' %}">
+                                    <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'login' %}">Login</a>
+                        <a class="nav-link" href="{% url 'login' %}">
+                            <i class="bi bi-box-arrow-in-right me-1"></i>Login
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'register' %}">Register</a>
+                        <a class="nav-link nav-link-btn" href="{% url 'register' %}">
+                            <i class="bi bi-person-plus me-1"></i>Register
+                        </a>
                     </li>
                 {% endif %}
             </ul>
         </div>
     </div>
+    <div class="navbar-overlay"></div>
 </nav>
 
-<div class="container my-4">
+<div class="main-content">
     {% block user_content %}{% endblock %}
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/navbar.js' %}"></script>
 {% endblock %}
 

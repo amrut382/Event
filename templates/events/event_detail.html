@@ -3,66 +3,150 @@
 
 {% block title %}{{ event.title }} - Event Booking Platform{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+<style>
+    .event-detail-image {
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+    .guest-locked-section {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border: 2px dashed #667eea;
+        border-radius: 15px;
+        padding: 3rem 2rem;
+        text-align: center;
+        margin: 2rem 0;
+    }
+    .locked-icon {
+        font-size: 4rem;
+        color: #667eea;
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock %}
+
 {% block user_content %}
 <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-{% if user.is_authenticated %}8{% else %}12{% endif %}">
+        <!-- Event Image/Photo Gallery -->
         {% if event.image %}
-            <img src="{{ event.image.url }}" class="img-fluid rounded mb-4" alt="{{ event.title }}">
+            <img src="{{ event.image.url }}" class="img-fluid event-detail-image" alt="{{ event.title }}">
         {% endif %}
         
-        <h1>{{ event.title }}</h1>
-        <p class="text-muted">{{ event.description }}</p>
+        <!-- Event Title -->
+        <h1 class="mb-3">{{ event.title }}</h1>
         
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title">Event Details</h5>
-                <p><i class="bi bi-calendar"></i> <strong>Date:</strong> {{ event.date }}</p>
-                <p><i class="bi bi-clock"></i> <strong>Time:</strong> {{ event.time }}</p>
-                <p><i class="bi bi-geo-alt"></i> <strong>Location:</strong> {{ event.location }}</p>
-                <p><i class="bi bi-person"></i> <strong>Organizer:</strong> {{ event.organizer }}</p>
-                <p><i class="bi bi-tag"></i> <strong>Category:</strong> {{ event.category.name|default:"N/A" }}</p>
-                <p><i class="bi bi-type"></i> <strong>Type:</strong> {{ event.get_event_type_display }}</p>
-                <p><i class="bi bi-people"></i> <strong>Capacity:</strong> {{ event.capacity }}</p>
-                <p><i class="bi bi-currency-dollar"></i> <strong>Price:</strong> ${{ event.price }}</p>
-            </div>
+        <!-- Full Description (Visible to all) -->
+        <div class="event-description-section mb-4">
+            <p class="lead text-muted">{{ event.description }}</p>
         </div>
         
+        <!-- Video (Visible to all) -->
         {% if event.video %}
-        <div class="card mb-4">
+        <div class="card mb-4 shadow-sm">
             <div class="card-body">
-                <h5 class="card-title">Event Video</h5>
-                <video width="100%" controls>
+                <h5 class="card-title mb-3">
+                    <i class="bi bi-play-circle me-2"></i>Event Video
+                </h5>
+                <video width="100%" controls style="border-radius: 10px;">
                     <source src="{{ event.video.url }}" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
             </div>
         </div>
         {% endif %}
+        
+        <!-- Full Event Details (Only for logged-in users) -->
+        {% if user.is_authenticated %}
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title mb-4">
+                    <i class="bi bi-info-circle me-2"></i>Event Details
+                </h5>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <p><i class="bi bi-calendar3 text-primary me-2"></i> <strong>Date:</strong> {{ event.date }}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <p><i class="bi bi-clock text-primary me-2"></i> <strong>Time:</strong> {{ event.time }}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <p><i class="bi bi-geo-alt-fill text-primary me-2"></i> <strong>Location:</strong> {{ event.location }}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <p><i class="bi bi-person text-primary me-2"></i> <strong>Organizer:</strong> {{ event.organizer }}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <p><i class="bi bi-tag text-primary me-2"></i> <strong>Category:</strong> {{ event.category.name|default:"N/A" }}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <p><i class="bi bi-grid text-primary me-2"></i> <strong>Type:</strong> {{ event.get_event_type_display }}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <p><i class="bi bi-people text-primary me-2"></i> <strong>Capacity:</strong> {{ event.capacity }} people</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <p><i class="bi bi-currency-rupee text-primary me-2"></i> <strong>Price:</strong> ₹{{ event.price }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <!-- Guest User Locked Section -->
+        <div class="guest-locked-section">
+            <div class="locked-icon">
+                <i class="bi bi-lock-fill"></i>
+            </div>
+            <h3 class="mb-3">Full Event Details Locked</h3>
+            <p class="text-muted mb-4">
+                Login or Register to view complete event information including:
+            </p>
+            <ul class="list-unstyled text-muted mb-4">
+                <li><i class="bi bi-check-circle-fill text-success me-2"></i>Event Date & Time</li>
+                <li><i class="bi bi-check-circle-fill text-success me-2"></i>Venue/Location</li>
+                <li><i class="bi bi-check-circle-fill text-success me-2"></i>Pricing Information</li>
+                <li><i class="bi bi-check-circle-fill text-success me-2"></i>Organizer Contact</li>
+                <li><i class="bi bi-check-circle-fill text-success me-2"></i>Booking Options</li>
+            </ul>
+            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                <a href="{% url 'login' %}?next={% url 'event_detail' event.id %}" class="btn btn-primary btn-lg" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 12px 30px; font-weight: 600; border-radius: 50px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Login to View Details
+                </a>
+                <a href="{% url 'register' %}?next={% url 'event_detail' event.id %}" class="btn btn-outline-primary btn-lg" style="border: 2px solid #667eea; color: #667eea; padding: 12px 30px; font-weight: 600; border-radius: 50px;">
+                    <i class="bi bi-person-plus me-2"></i>Register Now
+                </a>
+            </div>
+        </div>
+        {% endif %}
     </div>
     
+    <!-- Booking Section (Only visible for logged-in users) -->
+    {% if user.is_authenticated %}
     <div class="col-md-4">
-        <div class="card sticky-top" style="top: 20px;">
-            <div class="card-body text-center">
-                <h3 class="card-title">${{ event.price }}</h3>
+        <div class="card sticky-top shadow-sm" style="top: 90px; border-radius: 15px;">
+            <div class="card-body text-center p-4">
+                <div class="price-display mb-4">
+                    <span class="text-muted small d-block mb-1">Starting from</span>
+                    <h2 class="mb-0" style="color: #667eea; font-weight: 700;">₹{{ event.price }}</h2>
+                </div>
                 {% if event.registration_enabled %}
-                    {% if user.is_authenticated %}
-                        <a href="{% url 'booking_step1' event.id %}" class="btn btn-primary btn-lg w-100 mt-3">
-                            Book Now
-                        </a>
-                    {% else %}
-                        <p class="text-muted">Please login to book this event</p>
-                        <a href="{% url 'login' %}?next={% url 'booking_step1' event.id %}" class="btn btn-primary btn-lg w-100 mt-3">
-                            Login to Book
-                        </a>
-                    {% endif %}
+                    <a href="{% url 'booking_step1' event.id %}" class="btn btn-primary btn-lg w-100 mb-3" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 15px; font-weight: 600; border-radius: 12px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); transition: all 0.3s ease;">
+                        <i class="bi bi-calendar-check me-2"></i>Book Now
+                    </a>
+                    <p class="text-muted small mb-0">
+                        <i class="bi bi-shield-check me-1"></i>Secure booking process
+                    </p>
                 {% else %}
-                    <button class="btn btn-secondary btn-lg w-100 mt-3" disabled>
-                        Registration Disabled
+                    <button class="btn btn-secondary btn-lg w-100" disabled style="padding: 15px; border-radius: 12px; opacity: 0.6;">
+                        <i class="bi bi-x-circle me-2"></i>Registration Disabled
                     </button>
                 {% endif %}
             </div>
         </div>
     </div>
+    {% endif %}
 </div>
 {% endblock %}
 

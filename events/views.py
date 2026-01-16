@@ -43,7 +43,8 @@ def is_staff_or_admin(user):
 
 # User Side Views
 def home(request):
-    events = Event.objects.filter(registration_enabled=True)
+    # Show all events on home page (filter can be applied via search)
+    events = Event.objects.all()
     form = EventSearchForm(request.GET)
     
     if form.is_valid():
@@ -71,33 +72,50 @@ def home(request):
         'page_obj': page_obj,
         'form': form,
         'categories': categories,
+        'request': request,
     })
 
 
 def event_detail(request, event_id):
     event = get_object_or_404(Event, id=event_id)
-    return render(request, 'events/event_detail.html', {'event': event})
+    # Preserve next parameter if exists for redirect after login/register
+    next_url = request.GET.get('next', None)
+    return render(request, 'events/event_detail.html', {
+        'event': event,
+        'next_url': next_url,
+    })
 
 
 def register(request):
     if request.user.is_authenticated:
         return redirect('home')
     
+    next_url = request.GET.get('next', 'home')
+    
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            messages.success(request, 'Registration successful! Please login.')
-            return redirect('login')
+            # Auto-login after registration
+            login(request, user)
+            messages.success(request, 'Registration successful! Welcome to Event Booking Platform.')
+            
+            # Redirect to booking page if 'next' parameter exists
+            if next_url and next_url != 'home':
+                return redirect(next_url)
+            return redirect('home')
     else:
         form = UserRegistrationForm()
     
-    return render(request, 'events/register.html', {'form': form})
+    return render(request, 'events/register.html', {'form': form, 'next_url': next_url})
 
 
 def user_login(request):
     if request.user.is_authenticated:
-        return redirect('home')
+        next_url = request.GET.get('next', 'home')
+        return redirect(next_url)
+    
+    next_url = request.GET.get('next', 'home')
     
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -112,7 +130,7 @@ def user_login(request):
                 # Check if account is locked
                 if profile.locked_until and profile.locked_until > timezone.now():
                     messages.error(request, f'Account is locked. Try again after {profile.locked_until.strftime("%H:%M:%S")}')
-                    return render(request, 'events/login.html', {'form': form})
+                    return render(request, 'events/login.html', {'form': form, 'next_url': next_url})
                 
                 user = authenticate(request, username=username, password=password)
                 if user:
@@ -120,8 +138,10 @@ def user_login(request):
                     profile.locked_until = None
                     profile.save()
                     login(request, user)
-                    next_url = request.GET.get('next', 'home')
-                    return redirect(next_url)
+                    # Redirect to next URL (booking page or event detail)
+                    if next_url and next_url != 'home':
+                        return redirect(next_url)
+                    return redirect('home')
                 else:
                     profile.failed_login_attempts += 1
                     if profile.failed_login_attempts >= 3:
@@ -135,7 +155,7 @@ def user_login(request):
     else:
         form = LoginForm()
     
-    return render(request, 'events/login.html', {'form': form})
+    return render(request, 'events/login.html', {'form': form, 'next_url': next_url})
 
 
 def user_logout(request):

@@ -31,7 +31,7 @@
                 <td>{{ event.category.name|default:"N/A" }}</td>
                 <td>{{ event.date }}</td>
                 <td>{{ event.location }}</td>
-                <td>${{ event.price }}</td>
+                <td>₹{{ event.price }}</td>
                 <td>
                     {% if event.registration_enabled %}
                         <span class="badge bg-success">Enabled</span>

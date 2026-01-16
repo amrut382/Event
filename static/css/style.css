@@ -65,6 +65,11 @@
 /* General Styles */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding-top: 70px; /* Account for fixed navbar */
+}
+
+.main-content {
+    min-height: calc(100vh - 56px);
 }
 
 .card {
@@ -82,9 +87,7 @@ body {
     border-radius: 0.25rem;
 }
 
-.navbar-brand {
-    font-weight: bold;
-}
+/* Navbar styles moved to navbar.css */
 
 .footer {
     margin-top: auto;

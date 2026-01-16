@@ -36,7 +36,7 @@
                             {% for package in photography_packages %}
                             <tr>
                                 <td>{{ package.name }}</td>
-                                <td>${{ package.price }}</td>
+                                <td>₹{{ package.price }}</td>
                                 <td>
                                     {% if package.is_active %}
                                         <span class="badge bg-success">Active</span>
@@ -76,7 +76,7 @@
                             {% for package in catering_packages %}
                             <tr>
                                 <td>{{ package.name }}</td>
-                                <td>${{ package.price_per_plate }}</td>
+                                <td>₹{{ package.price_per_plate }}</td>
                                 <td>
                                     {% if package.is_active %}
                                         <span class="badge bg-success">Active</span>
