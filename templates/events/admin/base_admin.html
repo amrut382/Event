@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="wrapper">
+    <nav id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="bi bi-calendar-event"></i> Admin Panel</h3>
+        </div>
+        <ul class="list-unstyled components">
+            <li>
+                <a href="{% url 'admin_dashboard' %}">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'admin_events' %}">
+                    <i class="bi bi-calendar3"></i> Events
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'admin_bookings' %}">
+                    <i class="bi bi-book"></i> Bookings
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'admin_users' %}">
+                    <i class="bi bi-people"></i> Users
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'admin_services' %}">
+                    <i class="bi bi-gear"></i> Services
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'home' %}">
+                    <i class="bi bi-house"></i> View Site
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'logout' %}">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <div id="content" class="content-wrapper">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <button type="button" id="sidebarCollapse" class="btn btn-info">
+                <i class="bi bi-list"></i>
+            </button>
+            <div class="ms-auto">
+                <span class="navbar-text">
+                    Welcome, {{ user.username }}
+                </span>
+            </div>
+        </nav>
+
+        <div class="container-fluid p-4">
+            {% block admin_content %}{% endblock %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+            $('#content').toggleClass('active');
+        });
+    });
+</script>
+{% endblock %}
+

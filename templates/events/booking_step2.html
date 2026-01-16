@@ -1,0 +1,125 @@
+{% extends 'events/base_user.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Booking Step 2: Add-on Services - Event Booking Platform{% endblock %}
+
+{% block user_content %}
+<div class="row">
+    <div class="col-md-10 mx-auto">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Step 2: Select Add-on Services (Optional)</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5>Photography Packages</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                {% for package in photography_packages %}
+                                <div class="col-md-4 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h6>{{ package.name }}</h6>
+                                            <p class="text-muted small">{{ package.description }}</p>
+                                            <p><strong>${{ package.price }}</strong></p>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="photography_package" 
+                                                       value="{{ package.id }}" id="photo_{{ package.id }}">
+                                                <label class="form-check-label" for="photo_{{ package.id }}">
+                                                    Select
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            
+                            <div id="photography-options" style="display: none;">
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        {{ photography_form.photo_type|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-4">
+                                        {{ photography_form.duration|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-4">
+                                        {{ photography_form.delivery_method|as_crispy_field }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5>Catering Packages</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                {% for package in catering_packages %}
+                                <div class="col-md-4 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h6>{{ package.name }}</h6>
+                                            <p class="text-muted small">{{ package.description }}</p>
+                                            <p><strong>${{ package.price_per_plate }}/plate</strong></p>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="catering_package" 
+                                                       value="{{ package.id }}" id="catering_{{ package.id }}">
+                                                <label class="form-check-label" for="catering_{{ package.id }}">
+                                                    Select
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            
+                            <div id="catering-options" style="display: none;">
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        {{ catering_form.food_type|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-4">
+                                        {{ catering_form.plate_count|as_crispy_field }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'booking_step1' booking.event.id %}" class="btn btn-secondary">Back</a>
+                        <button type="submit" class="btn btn-primary">Continue to Summary</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.querySelectorAll('input[name="photography_package"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        document.getElementById('photography-options').style.display = this.checked ? 'block' : 'none';
+    });
+});
+
+document.querySelectorAll('input[name="catering_package"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        document.getElementById('catering-options').style.display = this.checked ? 'block' : 'none';
+    });
+});
+</script>
+{% endblock %}
+

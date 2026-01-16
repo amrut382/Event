@@ -1,0 +1,144 @@
+{% extends 'events/admin/base_admin.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard - Event Booking Platform{% endblock %}
+
+{% block admin_content %}
+<h2 class="mb-4">Dashboard</h2>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Total Events</h5>
+                <h2>{{ total_events }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Total Bookings</h5>
+                <h2>{{ total_bookings }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h5 class="card-title">Total Users</h5>
+                <h2>{{ total_users }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <h5 class="card-title">Upcoming Events</h5>
+                <h2>{{ upcoming_events }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Monthly Bookings</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="monthlyBookingsChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Event-wise Registrations (Top 10)</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="eventRegistrationsChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Most Popular Events</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Event</th>
+                                <th>Bookings</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for event in event_registrations %}
+                            <tr>
+                                <td>{{ event.title }}</td>
+                                <td>{{ event.booking_count }}</td>
+                                <td>{{ event.date }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Monthly Bookings Chart
+    const monthlyData = {{ monthly_bookings|safe }};
+    const ctx1 = document.getElementById('monthlyBookingsChart').getContext('2d');
+    if (monthlyData && monthlyData.length > 0) {
+        new Chart(ctx1, {
+            type: 'line',
+            data: {
+                labels: monthlyData.map(d => d.booking_date__date),
+                datasets: [{
+                    label: 'Bookings',
+                    data: monthlyData.map(d => d.count),
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            }
+        });
+    }
+
+    // Event Registrations Chart
+    const eventData = [
+        {% for event in event_registrations %}
+        { label: '{{ event.title|truncatewords:5|escapejs }}', count: {{ event.booking_count }} },
+        {% endfor %}
+    ];
+    const ctx2 = document.getElementById('eventRegistrationsChart').getContext('2d');
+    if (eventData && eventData.length > 0) {
+        new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: eventData.map(d => d.label),
+                datasets: [{
+                    label: 'Registrations',
+                    data: eventData.map(d => d.count),
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)'
+            }]
+            }
+        });
+    }
+</script>
+{% endblock %}
+

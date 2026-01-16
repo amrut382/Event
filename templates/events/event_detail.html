@@ -1,0 +1,68 @@
+{% extends 'events/base_user.html' %}
+{% load static %}
+
+{% block title %}{{ event.title }} - Event Booking Platform{% endblock %}
+
+{% block user_content %}
+<div class="row">
+    <div class="col-md-8">
+        {% if event.image %}
+            <img src="{{ event.image.url }}" class="img-fluid rounded mb-4" alt="{{ event.title }}">
+        {% endif %}
+        
+        <h1>{{ event.title }}</h1>
+        <p class="text-muted">{{ event.description }}</p>
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Event Details</h5>
+                <p><i class="bi bi-calendar"></i> <strong>Date:</strong> {{ event.date }}</p>
+                <p><i class="bi bi-clock"></i> <strong>Time:</strong> {{ event.time }}</p>
+                <p><i class="bi bi-geo-alt"></i> <strong>Location:</strong> {{ event.location }}</p>
+                <p><i class="bi bi-person"></i> <strong>Organizer:</strong> {{ event.organizer }}</p>
+                <p><i class="bi bi-tag"></i> <strong>Category:</strong> {{ event.category.name|default:"N/A" }}</p>
+                <p><i class="bi bi-type"></i> <strong>Type:</strong> {{ event.get_event_type_display }}</p>
+                <p><i class="bi bi-people"></i> <strong>Capacity:</strong> {{ event.capacity }}</p>
+                <p><i class="bi bi-currency-dollar"></i> <strong>Price:</strong> ${{ event.price }}</p>
+            </div>
+        </div>
+        
+        {% if event.video %}
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Event Video</h5>
+                <video width="100%" controls>
+                    <source src="{{ event.video.url }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card sticky-top" style="top: 20px;">
+            <div class="card-body text-center">
+                <h3 class="card-title">${{ event.price }}</h3>
+                {% if event.registration_enabled %}
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'booking_step1' event.id %}" class="btn btn-primary btn-lg w-100 mt-3">
+                            Book Now
+                        </a>
+                    {% else %}
+                        <p class="text-muted">Please login to book this event</p>
+                        <a href="{% url 'login' %}?next={% url 'booking_step1' event.id %}" class="btn btn-primary btn-lg w-100 mt-3">
+                            Login to Book
+                        </a>
+                    {% endif %}
+                {% else %}
+                    <button class="btn btn-secondary btn-lg w-100 mt-3" disabled>
+                        Registration Disabled
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

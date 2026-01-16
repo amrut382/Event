@@ -1,0 +1,101 @@
+{% extends 'events/admin/base_admin.html' %}
+{% load static %}
+
+{% block title %}Service Management - Event Booking Platform{% endblock %}
+
+{% block admin_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Service Management</h2>
+    <div>
+        <a href="{% url 'admin_photography_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Add Photography Package
+        </a>
+        <a href="{% url 'admin_catering_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Add Catering Package
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Photography Packages</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for package in photography_packages %}
+                            <tr>
+                                <td>{{ package.name }}</td>
+                                <td>${{ package.price }}</td>
+                                <td>
+                                    {% if package.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Inactive</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center">No photography packages</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Catering Packages</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Price/Plate</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for package in catering_packages %}
+                            <tr>
+                                <td>{{ package.name }}</td>
+                                <td>${{ package.price_per_plate }}</td>
+                                <td>
+                                    {% if package.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Inactive</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center">No catering packages</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

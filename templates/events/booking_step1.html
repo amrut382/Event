@@ -1,0 +1,35 @@
+{% extends 'events/base_user.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Booking Step 1 - Event Booking Platform{% endblock %}
+
+{% block user_content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Step 1: Event Registration Details</h4>
+            </div>
+            <div class="card-body">
+                <div class="mb-4">
+                    <h5>{{ event.title }}</h5>
+                    <p><strong>Date:</strong> {{ event.date }} | <strong>Time:</strong> {{ event.time }}</p>
+                    <p><strong>Location:</strong> {{ event.location }}</p>
+                    <p><strong>Event Fee:</strong> ${{ event.price }}</p>
+                </div>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{% url 'event_detail' event.id %}" class="btn btn-secondary">Back</a>
+                        <button type="submit" class="btn btn-primary">Continue to Add-ons</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

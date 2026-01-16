@@ -1,0 +1,50 @@
+{% extends 'events/base_user.html' %}
+{% load static %}
+
+{% block title %}Booking Summary - Event Booking Platform{% endblock %}
+
+{% block user_content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Step 3: Price Summary</h4>
+            </div>
+            <div class="card-body">
+                <h5>Event: {{ booking.event.title }}</h5>
+                <hr>
+                
+                <table class="table">
+                    <tr>
+                        <td><strong>Event Fee:</strong></td>
+                        <td class="text-end">${{ booking.event_fee }}</td>
+                    </tr>
+                    {% for service in services %}
+                    <tr>
+                        <td>
+                            <strong>{{ service.get_service_type_display }}</strong>
+                            {% if service.photography_package %}
+                                - {{ service.photography_package.name }}
+                            {% elif service.catering_package %}
+                                - {{ service.catering_package.name }} ({{ service.plate_count }} plates)
+                            {% endif %}
+                        </td>
+                        <td class="text-end">${{ service.service_price }}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr class="table-primary">
+                        <td><strong>Total Amount:</strong></td>
+                        <td class="text-end"><strong>${{ booking.total_amount }}</strong></td>
+                    </tr>
+                </table>
+                
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{% url 'booking_step2' booking.id %}" class="btn btn-secondary">Back</a>
+                    <a href="{% url 'booking_confirm' booking.id %}" class="btn btn-success btn-lg">Confirm Booking</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
